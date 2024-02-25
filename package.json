@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^9.99.4",
     "@react-three/fiber": "^8.15.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "^0.161.0"
+    "react-use": "^17.5.0",
+    "three": "^0.161.0",
+    "typesafe-context-hook": "^1.0.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
