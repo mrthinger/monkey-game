@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
 import { Box, OrthographicCamera, Text } from "@react-three/drei";
 import { Banana, useGameState } from "./state";
