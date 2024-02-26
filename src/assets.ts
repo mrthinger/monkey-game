@@ -1,4 +1,4 @@
-import { Texture, TextureLoader } from "three";
+import { TextureLoader } from "three";
 
 const textureLoader = new TextureLoader();
 
@@ -9,6 +9,7 @@ export function loadAssets() {
       monkeyBad: textureLoader.load("sprites/monkeymad.png"),
       monkeyGood: textureLoader.load("sprites/monkey-good.png"),
       banana: textureLoader.load("sprites/banana.png"),
+      trap: textureLoader.load("sprites/trap.png"),
     },
   };
 }

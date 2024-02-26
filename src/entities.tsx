@@ -45,3 +45,26 @@ export function Monkey() {
     </ECS.Entity>
   );
 }
+
+export function Trap(props: { initialPosition: Vector3 }) {
+  const meshRef = useRef<Mesh>(null);
+
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.position.copy(props.initialPosition);
+    }
+  }, [props, meshRef]);
+
+  return (
+    <ECS.Entity>
+      <ECS.Component name="trap" data={true} />
+      <ECS.Component name="mesh" data={meshRef}>
+        <mesh ref={meshRef}>
+          <sprite
+            material={new SpriteMaterial({ map: assets.sprite.trap })}
+          />
+        </mesh>
+      </ECS.Component>
+    </ECS.Entity>
+  );
+}

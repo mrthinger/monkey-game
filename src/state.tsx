@@ -12,6 +12,7 @@ type Entity = {
   velocity?: Vector3;
   banana?: boolean;
   monkey?: boolean;
+  trap?: boolean;
 };
 
 const world = new World<Entity>();
@@ -25,6 +26,7 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
   "GameState",
   () => {
     const [bananas, bananasOps] = useList<JSX.Element>([]);
+    const [traps, trapsOps] = useList<JSX.Element>([]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useOnEntityAdded(monkeysQuery, (monkey) => {
@@ -55,8 +57,6 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
       }
     })
 
-    
-
-    return { bananas, bananasOps };
+    return { bananas, bananasOps, traps, trapsOps };
   }
 );
