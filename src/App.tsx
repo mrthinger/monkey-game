@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { Banana, Monkey, Trap } from "./entities";
 import { useGameState } from "./state";
 import { v4 as uuidv4 } from "uuid";
-import {assets} from "./assets";
+import { assets } from "./assets";
 
 function Land() {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -14,9 +14,9 @@ function Land() {
 
   return (
     <Box
-      // onClick={(e) => {
-      //   trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
-      // }}
+      onClick={(e) => {
+        trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
+      }}
       ref={meshRef}
       args={[10, 10, 0]}
     >
@@ -28,27 +28,18 @@ function Land() {
 function Farm(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
 
-  useFrame((_state, delta) => (meshRef.current.rotation.z += delta));
-  const { bananasOps } = useGameState();
-
-  const onClick = (e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation();
-    const bananaId = uuidv4();
-    bananasOps.push(<Banana key={bananaId} id={bananaId} />);
-  };
-
-  return <mesh ref={meshRef}>
-          <sprite
-            onClick={onClick}
-            scale={[2, 2, 2]}
-            material={new THREE.SpriteMaterial({ map: assets.sprite.farm })}
-          />
-        </mesh>
+  return (
+    <mesh ref={meshRef}>
+      <sprite
+        scale={[2, 2, 2]}
+        material={new THREE.SpriteMaterial({ map: assets.sprite.farm })}
+      />
+    </mesh>
+  );
 }
 
 function App() {
   const { bananas, traps, balloons } = useGameState();
-
 
   return (
     <>
@@ -74,6 +65,8 @@ function App() {
       {bananas}
       {traps}
       {balloons}
+      <Monkey />
+      <Monkey />
       <Monkey />
     </>
   );

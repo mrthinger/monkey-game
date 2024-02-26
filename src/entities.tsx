@@ -93,13 +93,62 @@ export function Banana({ id }: { id: string }) {
 
 export function Monkey() {
   const meshRef = useRef<Mesh>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState(new Vector3());
 
+  useOnEntityAdded(bananasQuery, (banana) => {
+    const angle = Math.random() * Math.PI * 2;
+    const x = Math.cos(angle);
+    const y = Math.sin(angle);
+
+    banana?.mesh.current?.position.setX(x * 4);
+    banana?.mesh.current?.position.setY(y * 4);
+    banana?.mesh.current?.position.setZ(50);
+  });
+
+  const onPointerDown = (event: any) => {
+    event.stopPropagation();
+    setIsDragging(true);
+    event.target.setPointerCapture(event.pointerId);
+  };
+
+  const onPointerMove = (event: any) => {
+    if (isDragging) {
+      setDragPosition(
+        new Vector3(
+          event.unprojectedPoint.x,
+          event.unprojectedPoint.y,
+          meshRef.current?.position.z
+        )
+      );
+    }
+  };
+
+  const onPointerUp = (event: any) => {
+    event.stopPropagation();
+    setIsDragging(false);
+    event.target.releasePointerCapture(event.pointerId);
+  };
+
+  useFrame(() => {
+    if (isDragging && meshRef.current) {
+      meshRef.current.position.copy(dragPosition);
+    }
+  });
   return (
     <ECS.Entity>
       <ECS.Component name="monkey" data={true} />
       <ECS.Component name="hunger" data={0} />
+      <ECS.Component name="attack" data={1} />
+      <ECS.Component name="lastAttackTime" data={Date.now()} />
       <ECS.Component name="mesh" data={meshRef}>
-        <mesh ref={meshRef}>
+        <mesh
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onClick={(event) => event.stopPropagation()}
+          ref={meshRef}
+        >
           <sprite
             material={new SpriteMaterial({ map: assets.sprite.monkey })}
           />
@@ -113,7 +162,7 @@ export function Balloon({ id }: { id: string }) {
   const meshRef = useRef<Mesh>(null);
   // const entity = ECS.useCurentEntity();
   const angle = Math.random() * Math.PI * 2;
-  const rad = 4;
+  const rad = 7;
   const x = Math.cos(angle) * rad;
   const y = Math.sin(angle) * rad;
 
@@ -129,7 +178,7 @@ export function Balloon({ id }: { id: string }) {
   return (
     <ECS.Entity>
       <ECS.Component name="id" data={id} />
-      <ECS.Component name="health" data={1} />
+      <ECS.Component name="health" data={10} />
       <ECS.Component name="balloon" data={true} />
       <ECS.Component name="mesh" data={meshRef}>
         <mesh ref={meshRef} position={[x, y, 0]}>

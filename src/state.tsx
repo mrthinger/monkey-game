@@ -1,13 +1,13 @@
 import { useFrame } from "@react-three/fiber";
-import { World } from "miniplex";
+import { With, World } from "miniplex";
 import createReactAPI, { useOnEntityAdded } from "miniplex-react";
 import { Ref, RefObject, useEffect, useRef } from "react";
 import { useInterval, useList } from "react-use";
-import THREE, { Mesh, Sprite, Vector2, Vector3 } from "three";
+import { Mesh, Sprite, Vector2, Vector3, MeshStandardMaterial } from "three";
 import typesafeContextHook from "typesafe-context-hook";
 import { loadAssets } from "./assets";
 import { v4 as uuidv4 } from "uuid";
-import { Balloon } from "./entities";
+import { Balloon, Banana } from "./entities";
 
 type Entity = {
   id?: string;
@@ -18,7 +18,9 @@ type Entity = {
   trap?: boolean;
   hunger?: number;
   balloon?: boolean;
-  health?: number
+  health?: number;
+  attack?: number;
+  lastAttackTime?: number;
 };
 
 const world = new World<Entity>();
@@ -73,11 +75,48 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
           -mesh.position.y,
           -mesh.position.z
         ).normalize();
-        const speed = 0.01 * balloon.health!;
+        const speed = 0.001 * balloon.health!;
+        if (mesh.material instanceof MeshStandardMaterial) {
+          let healthBasedColor;
+          switch (balloon.health) {
+            case 10:
+              healthBasedColor = "pink";
+              break;
+            case 9:
+              healthBasedColor = "orange";
+              break;
+            case 8:
+              healthBasedColor = "yellow";
+              break;
+            case 7:
+              healthBasedColor = "green";
+              break;
+            case 6:
+              healthBasedColor = "blue";
+              break;
+            case 5:
+              healthBasedColor = "indigo";
+              break;
+            case 4:
+              healthBasedColor = "violet";
+              break;
+            case 3:
+              healthBasedColor = "purple";
+              break;
+            case 2:
+              healthBasedColor = "lime";
+              break;
+            case 1:
+              healthBasedColor = "red";
+              break;
+            default:
+              healthBasedColor = "gray";
+          }
+          mesh.material.color.set(healthBasedColor);
+        }
         mesh.position.x += direction.x * speed;
         mesh.position.y += direction.y * speed;
         mesh.position.z += direction.z * speed;
-
 
         if (mesh.position.length() === 0) {
           console.log("balloon stuck at 0");
@@ -87,7 +126,7 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
           // const y = Math.sin(angle) * radius;
           // mesh.position.set(x, y, mesh.position.z);
         }
-        if (mesh.position.length() > 0 && mesh.position.length() <= 0.05 ) {
+        if (mesh.position.length() > 0 && mesh.position.length() <= 0.25) {
           const balloonIndex = balloons.findIndex(
             (b) => b.props.id == balloon.id
           );
@@ -98,23 +137,50 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
       }
     });
 
-
     useFrame(() => {
       for (const monkey of monkeysQuery) {
         if (!monkey.mesh.current) continue;
-        let closestBalloon = null;
+
+        let closestBalloon: With<Entity, "balloon"> | undefined;
         let shortestDistance = Infinity;
         for (const balloon of balloonsQuery) {
           if (!balloon.mesh.current) continue;
-          const distance = monkey.mesh.current.position.distanceTo(balloon.mesh.current.position);
+          const distance = monkey.mesh.current.position.distanceTo(
+            balloon.mesh.current.position
+          );
           if (distance < shortestDistance) {
             shortestDistance = distance;
             closestBalloon = balloon;
           }
         }
         if (closestBalloon && closestBalloon.mesh.current) {
-          const direction = new Vector3().subVectors(closestBalloon.mesh.current.position, monkey.mesh.current.position).normalize();
-          monkey.mesh.current.position.add(direction.multiplyScalar(0.02));
+          const direction = new Vector3()
+            .subVectors(
+              closestBalloon.mesh.current.position,
+              monkey.mesh.current.position
+            )
+            .normalize();
+          monkey.mesh.current.position.add(direction.multiplyScalar(0.018));
+
+          if (
+            shortestDistance < 0.05 &&
+            closestBalloon &&
+            closestBalloon.health &&
+            monkey.lastAttackTime
+          ) {
+            const currentTime = Date.now();
+            if (currentTime - monkey.lastAttackTime >= 200) {
+              console.log("attacked");
+              closestBalloon.health -= 1;
+              monkey.lastAttackTime = currentTime;
+            }
+            if (closestBalloon.health <= 0) {
+              const balloonIndex = balloons.findIndex(
+                (b) => b.props.id == closestBalloon?.id
+              );
+              if (balloonIndex !== -1) balloonsOps.removeAt(balloonIndex);
+            }
+          }
         }
       }
     });
@@ -124,7 +190,19 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
       const balloon = <Balloon key={balloonId} id={balloonId} />;
       balloonsOps.push(balloon);
       console.log(balloon);
-    }, 2000);
+
+      
+    }, 1000);
+
+
+    useInterval(() => {
+   
+
+      const bananaId = uuidv4();
+      const banana = <Banana key={bananaId} id={bananaId} />;
+      bananasOps.push(banana);
+      console.log(banana);
+    }, 5000);
 
     // useFrame(() => {
     //   for (const monkey of monkeysQuery) {
