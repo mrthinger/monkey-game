@@ -79,35 +79,35 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
         if (mesh.material instanceof MeshStandardMaterial) {
           let healthBasedColor;
           switch (balloon.health) {
-            case 10:
-              healthBasedColor = "pink";
-              break;
-            case 9:
-              healthBasedColor = "orange";
-              break;
-            case 8:
-              healthBasedColor = "yellow";
-              break;
-            case 7:
-              healthBasedColor = "green";
-              break;
-            case 6:
-              healthBasedColor = "blue";
-              break;
-            case 5:
-              healthBasedColor = "indigo";
-              break;
-            case 4:
-              healthBasedColor = "violet";
-              break;
-            case 3:
-              healthBasedColor = "purple";
-              break;
-            case 2:
-              healthBasedColor = "lime";
-              break;
             case 1:
               healthBasedColor = "red";
+              break;
+            case 2:
+              healthBasedColor = "orange";
+              break;
+            case 3:
+              healthBasedColor = "yellow";
+              break;
+            case 4:
+              healthBasedColor = "green";
+              break;
+            case 5:
+              healthBasedColor = "blue";
+              break;
+            case 6:
+              healthBasedColor = "indigo";
+              break;
+            case 7:
+              healthBasedColor = "violet";
+              break;
+            case 8:
+              healthBasedColor = "purple";
+              break;
+            case 9:
+              healthBasedColor = "pink";
+              break;
+            case 10:
+              healthBasedColor = "lime";
               break;
             default:
               healthBasedColor = "gray";
