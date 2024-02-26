@@ -10,6 +10,7 @@ export function loadAssets() {
       monkeyGood: textureLoader.load("sprites/monkey-good.png"),
       banana: textureLoader.load("sprites/banana.png"),
       trap: textureLoader.load("sprites/trap.png"),
+      farm: textureLoader.load("sprites/farm.png"),
     },
   };
 }

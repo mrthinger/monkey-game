@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { Banana, Monkey, Trap } from "./entities";
 import { useGameState } from "./state";
 import { v4 as uuidv4 } from "uuid";
+import {assets} from "./assets";
 
 function Land() {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -36,7 +37,13 @@ function Farm(props: ThreeElements["mesh"]) {
     bananasOps.push(<Banana key={bananaId} id={bananaId} />);
   };
 
-  return <Box onClick={onClick} ref={meshRef} args={[1, 1, 1]} />;
+  return <mesh ref={meshRef}>
+          <sprite
+            onClick={onClick}
+            scale={[2, 2, 2]}
+            material={new THREE.SpriteMaterial({ map: assets.sprite.farm })}
+          />
+        </mesh>
 }
 
 function App() {
