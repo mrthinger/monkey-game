@@ -1,6 +1,11 @@
+import { useFrame } from "@react-three/fiber";
 import { World } from "miniplex";
 import createReactAPI from "miniplex-react";
-import { Sprite, Vector3 } from "three";
+import { Ref, useEffect, useRef } from "react";
+import { useList } from "react-use";
+import THREE, { Mesh, Sprite, Vector3 } from "three";
+import typesafeContextHook from "typesafe-context-hook";
+import { loadAssets } from "./assets";
 
 // type enum for banana, monkey, farm
 export enum EntityType {
@@ -16,12 +21,20 @@ type Health = {
 };
 
 type Entity = {
-  type: EntityType;
-  position: { x: number; y: number };
-  velocity?: { x: number; y: number };
+  mesh: Ref<Mesh>;
   sprite?: Sprite;
 };
 
 const world = new World<Entity>();
 
 export const ECS = createReactAPI(world);
+
+
+export const { useGameState, GameStateProvider } = typesafeContextHook(
+  "GameState",
+  () => {
+    const [bananas, bananasOps] = useList<JSX.Element>([]);
+
+    return { bananas, bananasOps };
+  }
+);
