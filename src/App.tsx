@@ -3,8 +3,11 @@ import { useRef } from "react";
 import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
 import { Box, OrthographicCamera, Text } from "@react-three/drei";
 import { ECS, EntityType } from "./state";
+import {loadAssets} from "./assets";
 
 const bananasQuery = ECS.world.where((e)=> e.type == EntityType.Banana)
+
+const assets = await loadAssets();
 
 function Farm(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -68,8 +71,7 @@ function App() {
       <ECS.Entities in={bananasQuery}>
         {(entity) => (
           <mesh position={entity.position}>
-            <sphereGeometry args={[0.1, 32, 32]} />
-            <meshStandardMaterial color="yellow" />
+            <sprite material={new THREE.SpriteMaterial({ map: assets.sprite.banana })} />
           </mesh>
         )}
       </ECS.Entities>
