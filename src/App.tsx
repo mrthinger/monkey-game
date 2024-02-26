@@ -2,9 +2,9 @@ import * as THREE from "three";
 import { useRef } from "react";
 import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
 import { Box, OrthographicCamera, Text } from "@react-three/drei";
-import { ECS } from "./state";
+import { ECS, EntityType } from "./state";
 
-const bananasQuery = ECS.world.with("isBanana");
+const bananasQuery = ECS.world.where((e)=> e.type == EntityType.Banana)
 
 function Farm(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -21,9 +21,8 @@ function Farm(props: ThreeElements["mesh"]) {
       .add(meshRef.current.position);
 
     ECS.world.add({
-      isBanana: true,
+      type: EntityType.Banana,
       position: randomPosition,
-      three: new THREE.Object3D(),
     });
     console.log(ECS.world);
   };

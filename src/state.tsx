@@ -7,7 +7,7 @@ import { Vector3 } from "@react-three/fiber";
 import { Sprite } from "three";
 
 // type enum for banana, monkey, farm
-enum EntityType {
+export enum EntityType {
   Banana,
   Monkey,
   Farm,
@@ -20,10 +20,10 @@ type Health = {
 };
 
 type Entity = {
-  type: EntityType.Monkey;
+  type: EntityType;
   position: Vector3;
-  velocity: Vector3;
-  sprite: Sprite;
+  velocity?: Vector3;
+  sprite?: Sprite;
 };
 
 const world = new World<Entity>();
