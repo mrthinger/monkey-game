@@ -17,8 +17,8 @@ type Health = {
 
 type Entity = {
   type: EntityType;
-  position: Vector3;
-  velocity?: Vector3;
+  position: { x: number; y: number; z: number };
+  velocity?: { x: number; y: number; z: number };
   sprite?: Sprite;
 };
 

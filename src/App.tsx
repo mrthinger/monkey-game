@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
-import { Box, OrthographicCamera, Text } from "@react-three/drei";
+import { Box, OrthographicCamera } from "@react-three/drei";
 import { ECS, EntityType } from "./state";
-import {loadAssets} from "./assets";
+import { loadAssets } from "./assets";
 
-const bananasQuery = ECS.world.where((e)=> e.type == EntityType.Banana)
+import { useEntities } from "miniplex-react";
 
 const assets = await loadAssets();
 
@@ -25,30 +25,56 @@ function Farm(props: ThreeElements["mesh"]) {
 
     ECS.world.add({
       type: EntityType.Banana,
-      position: randomPosition,
+      position: {
+        x: randomPosition.x,
+        y: randomPosition.y,
+        z: randomPosition.z,
+      },
+      velocity: {
+        x: randomPosition.x,
+        y: randomPosition.y,
+        z: randomPosition.z,
+      },
     });
-    console.log(ECS.world);
   };
 
-  return (
-    <>
-      <Text color="black" position={[0, 0, 1]} scale={0.1}>
-        FARM
-      </Text>
-      <Box
-        onClick={onClick}
-        ref={meshRef}
-        {...props}
-        args={[1, 1, 1]}
-        material-color="green"
-      />
-    </>
-  );
+  return <Box onClick={onClick} ref={meshRef} args={[1, 1, 1]} />;
+}
+
+function Entities() {
+  const bananasQuery = ECS.world.with("position", "velocity");
+  const bananas = useEntities(bananasQuery);
+
+  useFrame((_, dt) => {
+    for (const e of bananasQuery) {
+      const nPos = {
+        x: e.position.x + 0.01,
+        y: e.position.y,
+        z: e.position.z,
+      };
+      ECS.world.removeComponent(e, "position");
+      ECS.world.addComponent(e, "position", nPos);
+    }
+  });
+
+  return bananas.entities.map((banana) => {
+    console.log(banana);
+    return (
+      <mesh
+        key={ECS.world.id(banana)}
+        position={[banana.position.x, banana.position.y, 0]}
+      >
+        <sprite
+          material={new THREE.SpriteMaterial({ map: assets.sprite.banana })}
+        />
+      </mesh>
+    );
+  });
 }
 
 function App() {
   return (
-    <Canvas>
+    <>
       <OrthographicCamera
         makeDefault
         zoom={100}
@@ -67,15 +93,8 @@ function App() {
       <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
       <axesHelper scale={2} />
       <Farm position={[0, 0, 0]} />
-
-      <ECS.Entities in={bananasQuery}>
-        {(entity) => (
-          <mesh position={entity.position}>
-            <sprite material={new THREE.SpriteMaterial({ map: assets.sprite.banana })} />
-          </mesh>
-        )}
-      </ECS.Entities>
-    </Canvas>
+      <Entities />
+    </>
   );
 }
 
