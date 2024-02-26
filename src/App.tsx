@@ -14,9 +14,9 @@ function Land() {
 
   return (
     <Box
-      onClick={(e) => {
-        trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
-      }}
+      // onClick={(e) => {
+      //   trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
+      // }}
       ref={meshRef}
       args={[10, 10, 0]}
     >
