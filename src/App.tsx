@@ -41,35 +41,77 @@ function Farm(props: ThreeElements["mesh"]) {
   return <Box onClick={onClick} ref={meshRef} args={[1, 1, 1]} />;
 }
 
+const movingQuery = ECS.world.with("position", "velocity");
+const bananas = ECS.world.where((e) => e.type === EntityType.Banana);
+const monkey = ECS.world.where((e) => e.type === EntityType.Monkey);
+
 function Entities() {
-  const bananasQuery = ECS.world.with("position", "velocity");
-  const bananas = useEntities(bananasQuery);
+  const movingItems = useEntities(movingQuery);
 
   useFrame((_, dt) => {
-    for (const e of bananasQuery) {
+    for (const e of movingQuery) {
       const nPos = {
-        x: e.position.x + 0.01,
-        y: e.position.y,
-        z: e.position.z,
+        x: e.position.x + e.velocity.x * dt,
+        y: e.position.y + e.velocity.y * dt,
       };
       ECS.world.removeComponent(e, "position");
       ECS.world.addComponent(e, "position", nPos);
     }
   });
 
-  return bananas.entities.map((banana) => {
-    console.log(banana);
-    return (
-      <mesh
-        key={ECS.world.id(banana)}
-        position={[banana.position.x, banana.position.y, 0]}
-      >
-        <sprite
-          material={new THREE.SpriteMaterial({ map: assets.sprite.banana })}
-        />
-      </mesh>
-    );
+  const [lastMonkeySpawn, setLastMonkeySpawn] = useState(0);
+
+  useFrame((_, dt) => {
+    if (lastMonkeySpawn > 1) {
+      const x = Math.random() * 2 - 1;
+      const y = Math.random() * 2 - 1;
+      ECS.world.add({
+        type: EntityType.Monkey,
+        position: { x: x * 10, y: y * 10 },
+        velocity: { x: -x, y: -y },
+      });
+      setLastMonkeySpawn(0);
+    } else {
+      setLastMonkeySpawn((old) => old + dt);
+    }
   });
+
+  return (
+    <>
+      <ECS.Entities in={bananas}>
+        {(banana) => {
+          return (
+            <mesh
+              key={ECS.world.id(banana)}
+              position={[banana.position.x, banana.position.y, 0]}
+            >
+              <sprite
+                material={
+                  new THREE.SpriteMaterial({ map: assets.sprite.banana })
+                }
+              />
+            </mesh>
+          );
+        }}
+      </ECS.Entities>
+      <ECS.Entities in={monkey}>
+        {(banana) => {
+          return (
+            <mesh
+              key={ECS.world.id(banana)}
+              position={[banana.position.x, banana.position.y, 0]}
+            >
+              <sprite
+                material={
+                  new THREE.SpriteMaterial({ map: assets.sprite.monkey })
+                }
+              />
+            </mesh>
+          );
+        }}
+      </ECS.Entities>
+    </>
+  );
 }
 
 function App() {
