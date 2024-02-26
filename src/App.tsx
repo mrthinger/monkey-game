@@ -13,15 +13,7 @@ function Farm(props: ThreeElements["mesh"]) {
   const { bananasOps } = useGameState();
 
   const onClick = () => {
-    const x = Math.random() * 2 - 1;
-    const y = Math.random() * 2 - 1;
-    const z = Math.random() * 2 - 1;
-    const randomPosition = new THREE.Vector3(x, y, z)
-      .normalize()
-      .multiplyScalar(1)
-      .add(meshRef.current.position);
-
-    bananasOps.push(<Banana key={uuidv4()} initialPosition={randomPosition} />);
+    bananasOps.push(<Banana key={uuidv4()} />);
   };
 
   return <Box onClick={onClick} ref={meshRef} args={[1, 1, 1]} />;
@@ -49,8 +41,8 @@ function App() {
       />
       <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
       <axesHelper scale={2} />
-      <Farm position={[0, 0, 0]} />
       {bananas}
+      <Farm position={[0, 0, 0]} />
       <Monkey />
     </>
   );
