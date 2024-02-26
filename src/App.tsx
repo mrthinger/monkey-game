@@ -14,9 +14,9 @@ function Land() {
 
   return (
     <Box
-      onContextMenu={(e) => {
-        trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
-      }}
+      // onClick={(e) => {
+      //   trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
+      // }}
       ref={meshRef}
       args={[10, 10, 0]}
     >
@@ -47,7 +47,7 @@ function Farm(props: ThreeElements["mesh"]) {
 }
 
 function App() {
-  const { bananas, traps } = useGameState();
+  const { bananas, traps, balloons } = useGameState();
 
 
   return (
@@ -73,6 +73,7 @@ function App() {
       <Farm position={[0, 0, 0]} />
       {bananas}
       {traps}
+      {balloons}
       <Monkey />
     </>
   );

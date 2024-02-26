@@ -2,9 +2,17 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, useEffect, useState } from "react";
 import { assets } from "./assets";
-import { ECS, bananasQuery, monkeysQuery, useGameState } from "./state";
+import {
+  ECS,
+  balloonsQuery,
+  bananasQuery,
+  monkeysQuery,
+  useGameState,
+} from "./state";
 import { Mesh, Vector3, SpriteMaterial } from "three";
 import { useOnEntityAdded } from "miniplex-react";
+
+import { Text } from "@react-three/drei";
 
 export function Banana({ id }: { id: string }) {
   const meshRef = useRef<Mesh>(null);
@@ -48,7 +56,7 @@ export function Banana({ id }: { id: string }) {
     for (const monkey of monkeysQuery) {
       if (!monkey.mesh.current || !meshRef.current) continue;
       if (
-        monkey.mesh.current.position.distanceTo(meshRef.current.position) <= 1
+        monkey.mesh.current.position.distanceTo(meshRef.current.position) <= 0.5
       ) {
         monkey.hunger += 1;
         bananasOps.filter((banana) => banana.props.id !== id);
@@ -64,6 +72,7 @@ export function Banana({ id }: { id: string }) {
 
   return (
     <ECS.Entity>
+      <ECS.Component name="id" data={id} />
       <ECS.Component name="banana" data={true} />
       <ECS.Component name="mesh" data={meshRef}>
         <mesh
@@ -100,6 +109,38 @@ export function Monkey() {
   );
 }
 
+export function Balloon({ id }: { id: string }) {
+  const meshRef = useRef<Mesh>(null);
+  // const entity = ECS.useCurentEntity();
+  const angle = Math.random() * Math.PI * 2;
+  const rad = 4;
+  const x = Math.cos(angle) * rad;
+  const y = Math.sin(angle) * rad;
+
+  // useOnEntityAdded(balloonsQuery, (balloon) => {
+  //   if (!balloon) return;
+
+  //   balloon?.mesh?.current?.position.setX(x);
+  //   balloon?.mesh?.current?.position.setY(y);
+  //   balloon?.mesh?.current?.position.setZ(1);
+
+  // });
+
+  return (
+    <ECS.Entity>
+      <ECS.Component name="id" data={id} />
+      <ECS.Component name="health" data={1} />
+      <ECS.Component name="balloon" data={true} />
+      <ECS.Component name="mesh" data={meshRef}>
+        <mesh ref={meshRef} position={[x, y, 0]}>
+          <sphereGeometry args={[0.2, 32, 32]} />
+          <meshStandardMaterial color={"red"} />
+        </mesh>
+      </ECS.Component>
+    </ECS.Entity>
+  );
+}
+
 export function Trap(props: { initialPosition: Vector3 }) {
   const meshRef = useRef<Mesh>(null);
 
@@ -114,9 +155,7 @@ export function Trap(props: { initialPosition: Vector3 }) {
       <ECS.Component name="trap" data={true} />
       <ECS.Component name="mesh" data={meshRef}>
         <mesh ref={meshRef}>
-          <sprite
-            material={new SpriteMaterial({ map: assets.sprite.trap })}
-          />
+          <sprite material={new SpriteMaterial({ map: assets.sprite.trap })} />
         </mesh>
       </ECS.Component>
     </ECS.Entity>
