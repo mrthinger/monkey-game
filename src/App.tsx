@@ -2,14 +2,22 @@ import * as THREE from "three";
 import { useRef } from "react";
 import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
 import { Box, OrthographicCamera, Text } from "@react-three/drei";
-import { Banana, useGameState } from "./state";
+import { ECS } from "./state";
+
+const bananasQuery = ECS.world.with("isBanana");
+
+
+
+
+
+
+
 
 function Farm(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
 
-  const state = useGameState();
-
   useFrame((_state, delta) => (meshRef.current.rotation.z += delta));
+
   const onClick = () => {
     const x = Math.random() * 2 - 1;
     const y = Math.random() * 2 - 1;
@@ -19,11 +27,12 @@ function Farm(props: ThreeElements["mesh"]) {
       .multiplyScalar(1)
       .add(meshRef.current.position);
 
-    const banana: Banana = {
+    ECS.world.add({
+      isBanana: true,
       position: randomPosition,
-    };
-
-    state.bananaOps.push(banana);
+      three: new THREE.Object3D(),
+    });
+    console.log(ECS.world);
   };
 
   return (
@@ -43,8 +52,6 @@ function Farm(props: ThreeElements["mesh"]) {
 }
 
 function App() {
-  const state = useGameState();
-
   return (
     <Canvas>
       <OrthographicCamera
@@ -65,12 +72,16 @@ function App() {
       <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
       <axesHelper scale={2} />
       <Farm position={[0, 0, 0]} />
-      {state.bananas.map((banana, index) => (
-        <mesh key={index} position={banana.position}>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color="yellow" />
-        </mesh>
-      ))}
+
+      <ECS.Entities in={bananasQuery}>
+        {(entity) => {
+          return (
+            <ECS.Entity entity={entity} >
+
+            </ECS.Entity>
+          );
+        }}
+      </ECS.Entities>
     </Canvas>
   );
 }
