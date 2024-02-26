@@ -2,13 +2,25 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, useEffect, useState } from "react";
 import { assets } from "./assets";
-import { ECS } from "./state";
+import { ECS, bananasQuery, monkeysQuery, useGameState } from "./state";
 import { Mesh, Vector3, SpriteMaterial } from "three";
+import { useOnEntityAdded } from "miniplex-react";
 
-export function Banana() {
-  const meshRef = useRef<Mesh>(null!);
+export function Banana({ id }: { id: string }) {
+  const meshRef = useRef<Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState(new Vector3());
+  const { bananasOps } = useGameState();
+
+  useOnEntityAdded(bananasQuery, (banana) => {
+    const angle = Math.random() * Math.PI * 2;
+    const x = Math.cos(angle);
+    const y = Math.sin(angle);
+
+    banana?.mesh.current?.position.setX(x * 4);
+    banana?.mesh.current?.position.setY(y * 4);
+    banana?.mesh.current?.position.setZ(50);
+  });
 
   const onPointerDown = (event: any) => {
     event.stopPropagation();
@@ -19,7 +31,11 @@ export function Banana() {
   const onPointerMove = (event: any) => {
     if (isDragging) {
       setDragPosition(
-        new Vector3(event.unprojectedPoint.x, event.unprojectedPoint.y, meshRef.current.position.z)
+        new Vector3(
+          event.unprojectedPoint.x,
+          event.unprojectedPoint.y,
+          meshRef.current?.position.z
+        )
       );
     }
   };
@@ -28,6 +44,16 @@ export function Banana() {
     event.stopPropagation();
     setIsDragging(false);
     event.target.releasePointerCapture(event.pointerId);
+
+    for (const monkey of monkeysQuery) {
+      if (!monkey.mesh.current || !meshRef.current) continue;
+      if (
+        monkey.mesh.current.position.distanceTo(meshRef.current.position) <= 1
+      ) {
+        monkey.hunger += 1;
+        bananasOps.filter((banana) => banana.props.id !== id);
+      }
+    }
   };
 
   useFrame(() => {
@@ -61,6 +87,7 @@ export function Monkey() {
   return (
     <ECS.Entity>
       <ECS.Component name="monkey" data={true} />
+      <ECS.Component name="hunger" data={0} />
       <ECS.Component name="mesh" data={meshRef}>
         <mesh ref={meshRef}>
           <sprite

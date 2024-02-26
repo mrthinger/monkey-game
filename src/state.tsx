@@ -13,15 +13,16 @@ type Entity = {
   banana?: boolean;
   monkey?: boolean;
   trap?: boolean;
+  hunger?: number;
 };
 
 const world = new World<Entity>();
 
 export const ECS = createReactAPI(world);
 
-const monkeysQuery = ECS.world.with("monkey");
-const bananasQuery = ECS.world.with("banana");
-const movingEntities = ECS.world.with("mesh", "velocity");
+export const monkeysQuery = ECS.world.with("monkey", "hunger");
+export const bananasQuery = ECS.world.with("banana");
+export const movingEntities = ECS.world.with("mesh", "velocity");
 
 export const { useGameState, GameStateProvider } = typesafeContextHook(
   "GameState",
@@ -37,17 +38,7 @@ export const { useGameState, GameStateProvider } = typesafeContextHook(
       monkey.mesh.current?.position.setX(x * 5);
       monkey.mesh.current?.position.setY(y * 5);
 
-      ECS.world.addComponent(monkey, "velocity", new Vector3(-x, -y, 0));
-    });
-
-    useOnEntityAdded(bananasQuery, (banana) => {
-      const angle = Math.random() * Math.PI * 2;
-      const x = Math.cos(angle);
-      const y = Math.sin(angle);
-
-      banana.mesh.current?.position.setX(x * 4);
-      banana.mesh.current?.position.setY(y * 4);
-      banana.mesh.current?.position.setZ(50);
+      // ECS.world.addComponent(monkey, "velocity", new Vector3(-x, -y, 0));
     });
 
     useFrame((_, dt) => {

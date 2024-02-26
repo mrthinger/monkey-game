@@ -32,7 +32,8 @@ function Farm(props: ThreeElements["mesh"]) {
 
   const onClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    bananasOps.push(<Banana key={uuidv4()} />);
+    const bananaId = uuidv4();
+    bananasOps.push(<Banana key={bananaId} id={bananaId} />);
   };
 
   return <Box onClick={onClick} ref={meshRef} args={[1, 1, 1]} />;
