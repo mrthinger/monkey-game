@@ -3,8 +3,7 @@ import { useList } from "react-use";
 import { World } from "miniplex";
 import { useState } from "react";
 import createReactAPI from "miniplex-react";
-import { Vector3 } from "@react-three/fiber";
-import { Sprite } from "three";
+import { Sprite, Vector3 } from "three";
 
 // type enum for banana, monkey, farm
 export enum EntityType {
