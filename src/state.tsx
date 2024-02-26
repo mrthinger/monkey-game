@@ -2,8 +2,8 @@ import typesafeContextHook from "typesafe-context-hook";
 import { useList } from "react-use";
 import { World } from "miniplex";
 import { useState } from "react";
-import { Object3D, Vector3 } from "three";
 import createReactAPI from "miniplex-react"
+import { Vector3 } from "@react-three/fiber";
 
 
 // type enum for banana, monkey, farm

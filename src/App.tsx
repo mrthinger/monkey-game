@@ -6,13 +6,6 @@ import { ECS } from "./state";
 
 const bananasQuery = ECS.world.with("isBanana");
 
-
-
-
-
-
-
-
 function Farm(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
 
@@ -74,13 +67,12 @@ function App() {
       <Farm position={[0, 0, 0]} />
 
       <ECS.Entities in={bananasQuery}>
-        {(entity) => {
-          return (
-            <ECS.Entity entity={entity} >
-
-            </ECS.Entity>
-          );
-        }}
+        {(entity) => (
+          <mesh position={entity.position}>
+            <sphereGeometry args={[0.1, 32, 32]} />
+            <meshStandardMaterial color="yellow" />
+          </mesh>
+        )}
       </ECS.Entities>
     </Canvas>
   );
