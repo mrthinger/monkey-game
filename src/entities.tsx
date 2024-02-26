@@ -17,10 +17,44 @@ export function Banana(props: { initialPosition: Vector3 }) {
 
   return (
     <ECS.Entity>
-      <ECS.Component name="mesh">
+      <ECS.Component name="mesh" data={meshRef}>
         <mesh ref={meshRef}>
           <sprite
             material={new SpriteMaterial({ map: assets.sprite.banana })}
+          />
+        </mesh>
+      </ECS.Component>
+    </ECS.Entity>
+  );
+}
+
+export function Monkey(props: { initialPosition?: Vector3 }) {
+  const meshRef = useRef<Mesh>(null!);
+
+  useEffect(() => {
+    if (meshRef.current) {
+      let initPos: Vector3 | undefined;
+
+      if (props.initialPosition == null) {
+        const angle = Math.random() * Math.PI * 2;
+        const x = Math.cos(angle);
+        const y = Math.sin(angle);
+
+        initPos = new Vector3(x, y, 0);
+      } else {
+        initPos = props.initialPosition;
+      }
+
+      meshRef.current.position.copy(initPos);
+    }
+  }, [props, meshRef]);
+
+  return (
+    <ECS.Entity>
+      <ECS.Component name="mesh" data={meshRef}>
+        <mesh ref={meshRef}>
+          <sprite
+            material={new SpriteMaterial({ map: assets.sprite.monkey })}
           />
         </mesh>
       </ECS.Component>

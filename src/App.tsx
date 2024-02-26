@@ -2,7 +2,7 @@ import { Box, OrthographicCamera } from "@react-three/drei";
 import { ThreeElements, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
-import { Banana } from "./entities";
+import { Banana, Monkey } from "./entities";
 import { useGameState } from "./state";
 import { v4 as uuidv4 } from "uuid";
 
@@ -51,6 +51,7 @@ function App() {
       <axesHelper scale={2} />
       <Farm position={[0, 0, 0]} />
       {bananas}
+      <Monkey />
     </>
   );
 }

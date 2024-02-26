@@ -22,7 +22,6 @@ type Health = {
 
 type Entity = {
   mesh: Ref<Mesh>;
-  sprite?: Sprite;
 };
 
 const world = new World<Entity>();
