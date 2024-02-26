@@ -71,6 +71,7 @@ export function Banana({ id }: { id: string }) {
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
+          onClick={(event) => event.stopPropagation()}
         >
           <sprite
             material={new SpriteMaterial({ map: assets.sprite.banana })}

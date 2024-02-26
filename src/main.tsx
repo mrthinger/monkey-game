@@ -7,7 +7,7 @@ import { GameStateProvider } from "./state.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Canvas>
+    <Canvas onContextMenu={(e) => e.preventDefault()}>
       <GameStateProvider>
         <App />
       </GameStateProvider>

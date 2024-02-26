@@ -1,6 +1,6 @@
 import { Box, OrthographicCamera } from "@react-three/drei";
 import { ThreeElements, ThreeEvent, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { Banana, Monkey, Trap } from "./entities";
 import { useGameState } from "./state";
@@ -13,7 +13,7 @@ function Land() {
 
   return (
     <Box
-      onClick={(e) => {
+      onContextMenu={(e) => {
         trapsOps.push(<Trap key={uuidv4()} initialPosition={e.point} />);
       }}
       ref={meshRef}
@@ -41,6 +41,7 @@ function Farm(props: ThreeElements["mesh"]) {
 
 function App() {
   const { bananas, traps } = useGameState();
+
 
   return (
     <>
