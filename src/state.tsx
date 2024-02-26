@@ -7,21 +7,11 @@ import THREE, { Mesh, Sprite, Vector3 } from "three";
 import typesafeContextHook from "typesafe-context-hook";
 import { loadAssets } from "./assets";
 
-// type enum for banana, monkey, farm
-export enum EntityType {
-  Banana,
-  Monkey,
-  Farm,
-  Trap,
-}
-
-type Health = {
-  current: number;
-  max: number;
-};
 
 type Entity = {
   mesh: Ref<Mesh>;
+  banana?: boolean
+  monkey?: boolean
 };
 
 const world = new World<Entity>();

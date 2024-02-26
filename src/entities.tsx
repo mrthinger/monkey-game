@@ -17,6 +17,7 @@ export function Banana(props: { initialPosition: Vector3 }) {
 
   return (
     <ECS.Entity>
+      <ECS.Component name="banana" data={true} />
       <ECS.Component name="mesh" data={meshRef}>
         <mesh ref={meshRef}>
           <sprite
@@ -51,6 +52,7 @@ export function Monkey(props: { initialPosition?: Vector3 }) {
 
   return (
     <ECS.Entity>
+      <ECS.Component name="monkey" data={true} />
       <ECS.Component name="mesh" data={meshRef}>
         <mesh ref={meshRef}>
           <sprite
