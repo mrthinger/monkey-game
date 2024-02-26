@@ -1,5 +1,5 @@
 import { Box, OrthographicCamera } from "@react-three/drei";
-import { ThreeElements, ThreeEvent, useFrame } from "@react-three/fiber";
+import { ThreeElements, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 import { Banana, Monkey, Trap } from "./entities";
@@ -30,17 +30,9 @@ function Farm(props: ThreeElements["mesh"]) {
   useFrame((_state, delta) => (meshRef.current.rotation.z += delta));
   const { bananasOps } = useGameState();
 
-  const onClick = (e: ThreeEvent<MouseEvent>) => {
+  const onClick = () => {
     e.stopPropagation();
-    const x = Math.random() * 2 - 1;
-    const y = Math.random() * 2 - 1;
-    const z = Math.random() * 2 - 1;
-    const randomPosition = new THREE.Vector3(x, y, z)
-      .normalize()
-      .multiplyScalar(1)
-      .add(meshRef.current.position);
-
-    bananasOps.push(<Banana key={uuidv4()} initialPosition={randomPosition} />);
+    bananasOps.push(<Banana key={uuidv4()} />);
   };
 
   return <Box onClick={onClick} ref={meshRef} args={[1, 1, 1]} />;
